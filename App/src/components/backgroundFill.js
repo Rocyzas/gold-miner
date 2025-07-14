@@ -1,5 +1,41 @@
 import { gameConfig } from "../config/gameConfig.js";
 
+function createGoldItem(item, size) {
+  item.setData('size', size);
+  if (size === 'small') {
+    item.setData('score', gameConfig.goldSmallGold);
+    item.setData('pickupSpeed', gameConfig.goldSmallSpeed);
+    item.setScale(0.1);
+  } else if (size === 'medium') {
+    item.setData('score', gameConfig.goldMediumGold);
+    item.setData('pickupSpeed', gameConfig.goldMediumSpeed);
+    item.setScale(0.15);
+  } else if (size === 'large') {
+    item.setData('score', gameConfig.goldLargeGold);
+    item.setData('pickupSpeed', gameConfig.goldLargeSpeed);
+    item.setScale(0.2);
+  }
+}
+
+function createRockItem(item, size) {
+  item.setData('size', size);
+  if (size === 'small') {
+    item.setData('score', gameConfig.rockSmallGold);
+    item.setData('pickupSpeed', gameConfig.rockSmallSpeed);
+    item.setScale(0.1);
+  } else if (size === 'large') {
+    item.setData('score', gameConfig.rockLargeGold);
+    item.setData('pickupSpeed', gameConfig.rockLargeSpeed);
+    item.setScale(0.15);
+  }
+}
+
+function createBagItem(item) {
+  item.setData('score', 0);
+  item.setData('pickupSpeed', 1);
+  item.setScale(0.1);
+}
+
 export function createRandomItems(scene, rows, cols) {
   const items = scene.physics.add.group();
   const cellWidth = 800 / cols; // Assuming a scene width of 800
@@ -19,38 +55,14 @@ export function createRandomItems(scene, rows, cols) {
         const item = items.create(x, y, type);
         item.setData('type', type);
 
-        if (type === 'bag') {
-          item.setData('score', 0);
-          item.setData('pickupSpeed', 1);
-          item.setScale(0.1);
-        } else if (type === 'gold') {
+        if (type === 'gold') {
           const size = Phaser.Math.RND.pick(['small', 'medium', 'large']);
-          item.setData('size', size);
-          if (size === 'small') {
-            item.setData('score', gameConfig.goldSmallGold);
-            item.setData('pickupSpeed', gameConfig.goldSmallSpeed);
-            item.setScale(0.1);
-          } else if (size === 'medium') {
-            item.setData('score', gameConfig.goldMediumGold);
-            item.setData('pickupSpeed', gameConfig.goldMediumSpeed);
-            item.setScale(0.15);
-          } else if (size === 'large') {
-            item.setData('score', gameConfig.goldLargeGold);
-            item.setData('pickupSpeed', gameConfig.goldLargeSpeed);
-            item.setScale(0.2);
-          }
+          createGoldItem(item, size);
         } else if (type === 'rock') {
           const size = Phaser.Math.RND.pick(['small', 'large']);
-          item.setData('size', size);
-          if (size === 'small') {
-            item.setData('score', gameConfig.rockSmallGold);
-            item.setData('pickupSpeed', gameConfig.rockSmallSpeed);
-            item.setScale(0.1);
-          } else if (size === 'large') {
-            item.setData('score', gameConfig.rockLargeGold);
-            item.setData('pickupSpeed', gameConfig.rockLargeSpeed);
-            item.setScale(0.15);
-          }
+          createRockItem(item, size);
+        } else if (type === 'bag') {
+          createBagItem(item);
         }
 
         item.setOrigin(0.5, 0.5);

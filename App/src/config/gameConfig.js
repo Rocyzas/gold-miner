@@ -1,6 +1,7 @@
 export const gameConfig = {
     initialTime: 60,
-    initialSpeed: 25,
+    initialSpeed: 10,
+    strengthMultiplier: 10,
     initialMoney: 100,
     initialMoneyGoal: 500,
 
