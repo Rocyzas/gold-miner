@@ -1,6 +1,6 @@
 import { gameConfig } from "../config/gameConfig.js";
-import { createRandomItems } from "../components/backgroundFill.js";
-import Rope from "../components/rope.js";
+import { createRandomItems } from "../components/BackgroundFill.js";
+import Rope from "../components/Rope.js";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -10,7 +10,7 @@ export default class GameScene extends Phaser.Scene {
   init(data) {
     this.score = data.score || 0;
     this.level = data.level || 1;
-    this.upgrades = data.upgrades || { strength: false, rockMiner: false };
+    this.upgrades = data.upgrades || { strength: false, rockMiner: false, luck: false, dynamiteCount: 0 };
     this.goal = data.goal || gameConfig.initialMoneyGoal;
   }
 
@@ -19,11 +19,14 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('gold', '../../assets/gold.jpeg');
     this.load.image('rock', '../../assets/rock.jpg');
     this.load.image('bag', '../../assets/bag.png');
+    this.load.image('dynamit', 'assets/dynamit.png'); // Preload dynamite
   }
 
   create() {
+    // Miner sprite
     this.add.image(400, 50, 'miner').setScale(0.1);
 
+    // Score, goal, timer
     this.scoreText = this.add.text(20, 20, `Score: ${this.score}`, {
       fontSize: '24px',
       color: '#fff'
@@ -34,19 +37,18 @@ export default class GameScene extends Phaser.Scene {
       color: '#ff0'
     });
 
-    this.timeLeft = 30; // increase round time as needed
-    this.timerText = this.add.text(650, 20, `Time: ${this.timeLeft}`, {
+    this.timerText = this.add.text(650, 20, `Time: 30`, {
       fontSize: '24px',
       color: '#fff'
     });
 
+    this.timeLeft = 30;
     this.time.addEvent({
       delay: 1000,
       callback: () => {
         this.timeLeft--;
         this.timerText.setText(`Time: ${this.timeLeft}`);
         if (this.timeLeft <= 0) {
-          // Check if goal met, else game over
           if (this.score < this.goal) {
             this.scene.start('GameOverScene', { score: this.score });
           } else {
@@ -54,7 +56,7 @@ export default class GameScene extends Phaser.Scene {
               score: this.score,
               level: this.level,
               upgrades: this.upgrades,
-              goal: this.goal
+              goal: Math.floor(this.goal * 1.5)
             });
           }
         }
@@ -63,20 +65,29 @@ export default class GameScene extends Phaser.Scene {
       loop: true
     });
 
-    // Randomize rows and columns for background items
-    const randomRows = Phaser.Math.Between(5, 10); // Random rows between 5 and 10
-    const randomCols = Phaser.Math.Between(5, 10); // Random columns between 5 and 10
-
-    // Create randomized items
+    // Create items in random grid
+    const randomRows = Phaser.Math.Between(5, 10);
+    const randomCols = Phaser.Math.Between(5, 10);
     this.items = createRandomItems(this, randomRows, randomCols);
 
+    // Create rope
     this.rope = new Rope(this, this.upgrades);
+
+    // Dynamite counter text
+    this.dynamiteText = this.add.text(500, 20, `Dynamite: ${this.upgrades.dynamiteCount}`, {
+      fontSize: '20px',
+      color: '#fff'
+    });
   }
 
   update() {
     this.rope.update(this.items, scoreDelta => {
       this.score += scoreDelta;
       this.scoreText.setText(`Score: ${this.score}`);
+    }, remainingDynamite => {
+      // Update dynamite counter when rope consumes one
+      this.upgrades.dynamiteCount = remainingDynamite;
+      this.dynamiteText.setText(`Dynamite: ${this.upgrades.dynamiteCount}`);
     });
   }
 }
