@@ -1,5 +1,7 @@
 import { gameConfig } from "../config/gameConfig.js";
-import { createRandomItems } from "../components/BackgroundFill.js";
+// import { createItems } from "../components/createRandomItems.js";
+import { createItems } from "../components/createFixedItems.js";
+
 import Rope from "../components/Rope.js";
 
 export default class GameScene extends Phaser.Scene {
@@ -68,7 +70,7 @@ export default class GameScene extends Phaser.Scene {
     // Create items in random grid
     const randomRows = Phaser.Math.Between(5, 10);
     const randomCols = Phaser.Math.Between(5, 10);
-    this.items = createRandomItems(this, randomRows, randomCols);
+    this.items = createItems(this, randomRows, randomCols);
 
     // Create rope
     this.rope = new Rope(this, this.upgrades);

@@ -10,3 +10,4 @@ Add skill features that persist throught the game
 later:
 - audio
 - exit level early
+- animations and proper images
