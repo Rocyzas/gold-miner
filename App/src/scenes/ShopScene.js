@@ -48,12 +48,13 @@ export default class ShopScene extends Phaser.Scene {
           fontSize: '18px',
           fill: '#ff0'
         }).setInteractive();
-
+      
         btn.on('pointerdown', () => {
           if (this.score >= this.prices[upgrade.key]) {
             this.score -= this.prices[upgrade.key];
             this.upgrades[upgrade.key] = true;
             btn.setFill('#999').setText('[BOUGHT]');
+            btn.disableInteractive(); // 🔷 prevent further clicks
             this.updateMoney();
           }
         });
@@ -62,7 +63,7 @@ export default class ShopScene extends Phaser.Scene {
           fontSize: '18px',
           fill: '#999'
         });
-      }
+      }      
 
       y += 40;
     });
@@ -103,12 +104,21 @@ export default class ShopScene extends Phaser.Scene {
         score: this.score,
         level: this.level + 1,
         goal: this.goal,
-        upgrades: this.upgrades
+        upgrades: this.upgrades // keep as-is
       });
     });
   }
 
   updateMoney() {
     this.moneyText.setText(`Money: ${this.score}`);
+  }
+
+  getNextLevelUpgrades() {
+    return {
+      strength: false,
+      rockMiner: false,
+      luck: false,
+      dynamiteCount: this.upgrades.dynamiteCount
+    };
   }
 }

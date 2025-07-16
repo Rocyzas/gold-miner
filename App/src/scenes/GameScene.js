@@ -53,16 +53,7 @@ export default class GameScene extends Phaser.Scene {
         this.timeLeft--;
         this.timerText.setText(`Time: ${this.timeLeft}`);
         if (this.timeLeft <= 0) {
-          if (this.score < this.goal) {
-            this.scene.start('GameOverScene', { score: this.score });
-          } else {
-            this.scene.start('ShopScene', {
-              score: this.score,
-              level: this.level,
-              upgrades: this.upgrades,
-              goal: Math.floor(this.goal * 1.5)
-            });
-          }
+          this.finishLevel();
         }
       },
       callbackScope: this,
@@ -82,6 +73,17 @@ export default class GameScene extends Phaser.Scene {
       fontSize: '20px',
       color: '#fff'
     });
+
+    // Add Finish Level Early button
+    this.finishButton = this.add.text(650, 50, 'Finish Level Early', {
+      fontSize: '18px',
+      color: '#0f0',
+      backgroundColor: '#000',
+      padding: { x: 10, y: 5 },
+      borderRadius: 5
+    })
+    .setInteractive({ useHandCursor: true })
+    .on('pointerdown', () => this.finishLevel());
   }
 
   update() {
@@ -93,5 +95,23 @@ export default class GameScene extends Phaser.Scene {
       this.upgrades.dynamiteCount = remainingDynamite;
       this.dynamiteText.setText(`Dynamite: ${this.upgrades.dynamiteCount}`);
     });
+  }
+
+  finishLevel() {
+    if (this.score < this.goal) {
+      this.scene.start('GameOverScene', { score: this.score });
+    } else {
+      this.scene.start('ShopScene', {
+        score: this.score,
+        level: this.level,
+        upgrades: {
+          strength: false,
+          rockMiner: false,
+          luck: false,
+          dynamiteCount: this.upgrades.dynamiteCount
+        },
+        goal: Math.floor(this.goal * 1.5)
+      });
+    }
   }
 }
