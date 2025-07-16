@@ -12,9 +12,11 @@ export default class GameScene extends Phaser.Scene {
   init(data) {
     this.score = data.score || 0;
     this.level = data.level || 1;
-    this.upgrades = data.upgrades || { strength: false, rockMiner: false, luck: false, dynamiteCount: 0 };
+    const defaultUpgrades = { strength: false, rockMiner: false, luck: false, dynamiteCount: 0 };
+    this.upgrades = { ...defaultUpgrades, ...(data.upgrades || {}) };
     this.goal = data.goal || gameConfig.initialMoneyGoal;
   }
+  
 
   preload() {
     this.load.image('miner', '../../assets/miner.png');
