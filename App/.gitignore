@@ -30,5 +30,6 @@ coverage/
 *.sublime-workspace
 *.sublime-project
 
-# Optional: ignore generated thumbnails or large images
-#thumbnail.png
+package-lock.json
+phaser.js
+project.config
