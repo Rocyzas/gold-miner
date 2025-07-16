@@ -26,6 +26,8 @@ export default class Rope {
   }
 
   setupInput() {
+    this.cursors = this.scene.input.keyboard.createCursorKeys();
+
     this.scene.input.keyboard.on('keydown-SPACE', () => {
       if (this.ropeState === 'swing') {
         this.ropeState = 'extend';
@@ -115,14 +117,19 @@ export default class Rope {
   }
 
   updateRetract(updateScoreCb) {
-    const retractSpeed = this.calculateRetractSpeed();
+    let retractSpeed = this.calculateRetractSpeed();
+  
+    if (this.cursors.up.isDown) {
+      retractSpeed *= 10;  // 10x speed when holding arrow up
+    }
+  
     this.ropeLength -= retractSpeed;
-
+  
     if (this.hookedItem) {
       const { hookX, hookY } = this.getHookPosition();
       this.hookedItem.setPosition(hookX, hookY);
     }
-
+  
     if (this.ropeLength <= 50) {
       this.handleRetractComplete(updateScoreCb);
     }
