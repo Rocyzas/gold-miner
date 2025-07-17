@@ -20,15 +20,25 @@ export default class GameScene extends Phaser.Scene {
 
   preload() {
     this.load.image('miner', '../../assets/miner.png');
-    this.load.image('gold', '../../assets/gold.jpeg');
+    this.load.image('gold', '../../assets/gold.png');
     this.load.image('rock', '../../assets/rock.jpg');
     this.load.image('bag', '../../assets/bag.png');
-    this.load.image('dynamit', 'assets/dynamit.png'); // Preload dynamite
+    this.load.image('dynamit', 'assets/dynamite.jpg'); // Preload dynamite
+    this.load.image('background', '../../assets/background.png');
+    this.load.image('ropeTexture', '../../assets/rope.avif');
+    this.load.image('hook', '../../assets/hook.jpg');
   }
 
   create() {
+
+    // this.add.image(400, 300, 'background').setOrigin(0.5, 0.5).setDepth(-1);
+    this.add.image(400, 300, 'background')
+      .setOrigin(0.5, 0.5)
+      .setDisplaySize(this.scale.width, this.scale.height)
+      .setDepth(-1);
+
     // Miner sprite
-    this.add.image(400, 50, 'miner').setScale(0.1);
+    this.add.image(400, 180, 'miner').setScale(0.3);
 
     // Score, goal, timer
     this.scoreText = this.add.text(20, 20, `Score: ${this.score}`, {

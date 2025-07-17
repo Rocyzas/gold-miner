@@ -27,8 +27,15 @@ npx jest
 - Implement skill features that persist throughout the game.  
 - Refactor code structure for better maintainability.  
 - Add resettable and reusable items and skills.
+- Swing to move slower at the sides
 
 ## Future Enhancements  
 - Integrate audio support.  
 - Implement option to exit levels early.  
 - Add animations and improve image assets.
+
+
+## Tools
+ - Remove Background[https://www.remove.bg/upload]
+ - Pixelate[https://pixelartvillage.com/]
+ - Border[https://borderize.com/]

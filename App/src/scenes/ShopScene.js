@@ -26,6 +26,7 @@ export default class ShopScene extends Phaser.Scene {
   create() {
     this.add.text(300, 50, 'Shop', { fontSize: '32px', fill: '#fff' });
     this.add.text(50, 100, `Money: ${this.score}`, { fontSize: '20px', fill: '#fff' });
+    this.add.text(500, 100, `Next goal: ${this.goal}`, { fontSize: '20px', fill: '#fff' });
 
     this.moneyText = this.add.text(50, 130, `Dynamite: ${this.upgrades.dynamiteCount}`, { fontSize: '20px', fill: '#fff' });
 

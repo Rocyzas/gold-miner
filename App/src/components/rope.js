@@ -1,9 +1,13 @@
 import { gameConfig } from "../config/gameConfig.js";
 
 export default class Rope {
-  constructor(scene, upgrades) {
+  constructor(scene, upgrades, baseX = 400, baseY = 180) {
     this.scene = scene;
     this.upgrades = upgrades || {};
+
+    // rope base position
+    this.baseX = baseX;
+    this.baseY = baseY;
 
     this.defaultExtendSpeed = gameConfig.initialSpeed;
     this.ropeLength = 60;
@@ -14,6 +18,10 @@ export default class Rope {
     this.ropeState = 'swing';
     this.hookedItem = null;
 
+    this.swingTime = 0;
+    this.swingAmplitude = 60;
+    this.swingFrequency = 0.002;
+
     this.dynamiteStock = this.upgrades.dynamiteCount || 0;
 
     this.graphics = scene.add.graphics({ lineStyle: { width: 2, color: 0x000000 } });
@@ -22,6 +30,9 @@ export default class Rope {
       .setVisible(false);
     this.dynamiteUsedThisCycle = false;
 
+    // this.hookSprite = this.scene.add.sprite(this.baseX, this.baseY, 'hookImage');
+    // this.hookSprite.setOrigin(0.5, 0.5); // center origin
+    // this.hookSprite.setScale(0.5); // scale to fit, adjust as needed
     this.setupInput();
   }
 
@@ -37,6 +48,20 @@ export default class Rope {
     this.bombKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
   }
 
+  calculateSwingingLinePoints(hookX, hookY, ropeAngle, lineLength = 20) {
+    const angleRad = Phaser.Math.DegToRad(ropeAngle);
+    const perpAngle = angleRad - Math.PI / 2;
+  
+    const startX = hookX + (lineLength / 2) * Math.sin(perpAngle);
+    const startY = hookY + (lineLength / 2) * Math.cos(perpAngle);
+  
+    const endX = hookX - (lineLength / 2) * Math.sin(perpAngle);
+    const endY = hookY - (lineLength / 2) * Math.cos(perpAngle);
+  
+    return { startX, startY, endX, endY };
+  }
+  
+
   handleBombInput(updateDynamiteCb) {
     if (Phaser.Input.Keyboard.JustDown(this.bombKey)) {
       if (this.hookedItem && this.dynamiteStock > 0 && !this.dynamiteUsedThisCycle) {
@@ -46,7 +71,6 @@ export default class Rope {
       }
     }
   }
-  
 
   throwDynamite() {
     this.dynamiteStock--;
@@ -92,10 +116,8 @@ export default class Rope {
   }
 
   updateSwing() {
-    this.ropeAngle += this.ropeSwingSpeed * this.ropeSwingDirection;
-    if (this.ropeAngle > 60 || this.ropeAngle < -60) {
-      this.ropeSwingDirection *= -1;
-    }
+    this.swingTime += this.scene.game.loop.delta;
+    this.ropeAngle = this.swingAmplitude * Math.sin(this.swingFrequency * this.swingTime);
   }
 
   updateExtend(items) {
@@ -118,18 +140,18 @@ export default class Rope {
 
   updateRetract(updateScoreCb) {
     let retractSpeed = this.calculateRetractSpeed();
-  
+
     if (this.cursors.up.isDown) {
       retractSpeed *= 10;  // 10x speed when holding arrow up
     }
-  
+
     this.ropeLength -= retractSpeed;
-  
+
     if (this.hookedItem) {
       const { hookX, hookY } = this.getHookPosition();
       this.hookedItem.setPosition(hookX, hookY);
     }
-  
+
     if (this.ropeLength <= 50) {
       this.handleRetractComplete(updateScoreCb);
     }
@@ -153,11 +175,11 @@ export default class Rope {
       this.hookedItem.destroy();
       this.hookedItem = null;
     }
-  
+
     this.ropeLength = 50;
     this.ropeState = 'swing';
     this.dynamiteUsedThisCycle = false;  // reset here
-  }  
+  }
 
   calculateScore() {
     if (!this.hookedItem) return 0;
@@ -180,18 +202,27 @@ export default class Rope {
   }
 
   getHookPosition() {
-    const hookX = 400 + this.ropeLength * Math.sin(Phaser.Math.DegToRad(this.ropeAngle));
-    const hookY = 50 + this.ropeLength * Math.cos(Phaser.Math.DegToRad(this.ropeAngle));
+    const hookX = this.baseX + this.ropeLength * Math.sin(Phaser.Math.DegToRad(this.ropeAngle));
+    const hookY = this.baseY + this.ropeLength * Math.cos(Phaser.Math.DegToRad(this.ropeAngle));
     return { hookX, hookY };
   }
-
   drawRope() {
     const { hookX, hookY } = this.getHookPosition();
-
+  
     this.graphics.clear();
-    this.graphics.lineStyle(2, 0x000000);
-    this.graphics.lineBetween(400, 50, hookX, hookY);
-    this.graphics.fillStyle(0x000000, 1);
-    this.graphics.fillCircle(hookX, hookY, 5);
+    this.graphics.lineStyle(4, 0x5C4033);
+    this.graphics.lineBetween(this.baseX, this.baseY, hookX, hookY);
+  
+    // Use the new helper function to get swinging line endpoints
+    const { startX, startY, endX, endY } = this.calculateSwingingLinePoints(hookX, hookY, this.ropeAngle);
+    this.graphics.lineStyle(2, 0xFF0000);
+    this.graphics.lineBetween(startX, startY, endX, endY);
   }
+  drawHook() {
+    const { hookX, hookY } = this.getHookPosition();
+    const { startX, startY, endX, endY } = this.calculateSwingingLinePoints(hookX, hookY, this.ropeAngle);
+    this.graphics.lineStyle(3, 0xA0522D);
+    this.graphics.lineBetween(startX, startY, endX, endY);
+  }
+
 }
