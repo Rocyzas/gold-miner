@@ -26,12 +26,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('dynamit', 'assets/dynamite.jpg'); // Preload dynamite
     this.load.image('background', '../../assets/background.png');
     this.load.image('ropeTexture', '../../assets/rope.avif');
-    this.load.image('hook', '../../assets/hook.jpg');
+    this.load.image('hookImage', '../../assets/hook.jpg');
   }
 
   create() {
-
-    // this.add.image(400, 300, 'background').setOrigin(0.5, 0.5).setDepth(-1);
     this.add.image(400, 300, 'background')
       .setOrigin(0.5, 0.5)
       .setDisplaySize(this.scale.width, this.scale.height)

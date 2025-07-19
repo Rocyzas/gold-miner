@@ -30,9 +30,6 @@ export default class Rope {
       .setVisible(false);
     this.dynamiteUsedThisCycle = false;
 
-    // this.hookSprite = this.scene.add.sprite(this.baseX, this.baseY, 'hookImage');
-    // this.hookSprite.setOrigin(0.5, 0.5); // center origin
-    // this.hookSprite.setScale(0.5); // scale to fit, adjust as needed
     this.setupInput();
   }
 
@@ -210,19 +207,43 @@ export default class Rope {
     const { hookX, hookY } = this.getHookPosition();
   
     this.graphics.clear();
-    this.graphics.lineStyle(4, 0x5C4033);
-    this.graphics.lineBetween(this.baseX, this.baseY, hookX, hookY);
   
-    // Use the new helper function to get swinging line endpoints
-    const { startX, startY, endX, endY } = this.calculateSwingingLinePoints(hookX, hookY, this.ropeAngle);
-    this.graphics.lineStyle(2, 0xFF0000);
-    this.graphics.lineBetween(startX, startY, endX, endY);
-  }
-  drawHook() {
-    const { hookX, hookY } = this.getHookPosition();
-    const { startX, startY, endX, endY } = this.calculateSwingingLinePoints(hookX, hookY, this.ropeAngle);
-    this.graphics.lineStyle(3, 0xA0522D);
-    this.graphics.lineBetween(startX, startY, endX, endY);
-  }
+    // draw the rope line
+    this.graphics.lineStyle(4, 0xDAA06D);
+    this.graphics.lineBetween(this.baseX, this.baseY, hookX, hookY);
 
+    this.drawHook(hookX, hookY);
+  }  
+  drawHook(hookX, hookY){
+    const angleRad = Phaser.Math.DegToRad(this.ropeAngle + 180);
+  
+    const hookLength = 20;
+    const endX = hookX + hookLength * Math.sin(angleRad);
+    const endY = hookY + hookLength * Math.cos(angleRad);
+  
+    this.graphics.lineStyle(3, 0xDAA06D);
+    this.graphics.lineBetween(hookX, hookY, endX, endY);
+  
+    const wingLength = 10;
+    const leftWingX = hookX + wingLength * Math.sin(angleRad - Math.PI / 2);
+    const leftWingY = hookY + wingLength * Math.cos(angleRad - Math.PI / 2);
+    const rightWingX = hookX + wingLength * Math.sin(angleRad + Math.PI / 2);
+    const rightWingY = hookY + wingLength * Math.cos(angleRad + Math.PI / 2);
+  
+    this.graphics.lineBetween(leftWingX, leftWingY, rightWingX, rightWingY);
+  
+    // Add small claw ends to each side of the wing
+    const clawLength = 6;
+    const clawAngle = Math.PI / 4; // 45 degrees
+  
+    // Left claw (at left wing tip, angled upward)
+    const leftClawX = leftWingX + clawLength * Math.sin(angleRad - Math.PI / 2 - clawAngle);
+    const leftClawY = leftWingY + clawLength * Math.cos(angleRad - Math.PI / 2 - clawAngle);
+    this.graphics.lineBetween(leftWingX, leftWingY, leftClawX, leftClawY);
+  
+    // Right claw (at right wing tip, angled upward)
+    const rightClawX = rightWingX + clawLength * Math.sin(angleRad + Math.PI / 2 + clawAngle);
+    const rightClawY = rightWingY + clawLength * Math.cos(angleRad + Math.PI / 2 + clawAngle);
+    this.graphics.lineBetween(rightWingX, rightWingY, rightClawX, rightClawY);
+  }
 }
