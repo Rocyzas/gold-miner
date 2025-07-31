@@ -25,7 +25,7 @@ export default class Rope {
     this.dynamiteStock = this.upgrades.dynamiteCount || 0;
 
     this.graphics = scene.add.graphics({ lineStyle: { width: 2, color: 0x000000 } });
-    this.dynamiteSprite = scene.add.sprite(450, 50, 'dynamit')
+    this.dynamiteSprite = scene.add.sprite(450, 50, 'dynamite')
       .setScale(0.1)
       .setVisible(false);
     this.dynamiteUsedThisCycle = false;

@@ -78,9 +78,9 @@ describe('GameScene loading and object creation', () => {
     scene.preload();
 
     expect(scene.load.image).toHaveBeenCalledWith('miner', '../../assets/miner.png');
-    expect(scene.load.image).toHaveBeenCalledWith('gold', '../../assets/gold.jpeg');
+    expect(scene.load.image).toHaveBeenCalledWith('gold', '../../assets/gold.png');
     expect(scene.load.image).toHaveBeenCalledWith('rock', '../../assets/rock.jpg');
     expect(scene.load.image).toHaveBeenCalledWith('bag', '../../assets/bag.png');
-    expect(scene.load.image).toHaveBeenCalledWith('dynamit', 'assets/dynamit.png');
+    expect(scene.load.image).toHaveBeenCalledWith('dynamite', '../../assets/dynamite.jpg');
   });
 });

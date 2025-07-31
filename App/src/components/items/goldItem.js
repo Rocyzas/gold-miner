@@ -10,10 +10,10 @@ export function createGoldItem(item, size) {
   } else if (size === 'medium') {
     item.setData('score', gameConfig.goldMediumGold);
     item.setData('pickupSpeed', gameConfig.goldMediumSpeed);
-    item.setScale(0.15);
+    item.setScale(0.12);
   } else if (size === 'large') {
     item.setData('score', gameConfig.goldLargeGold);
     item.setData('pickupSpeed', gameConfig.goldLargeSpeed);
-    item.setScale(0.2);
+    item.setScale(0.15);
   }
 }

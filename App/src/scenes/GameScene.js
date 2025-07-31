@@ -23,7 +23,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image('gold', '../../assets/gold.png');
     this.load.image('rock', '../../assets/rock.jpg');
     this.load.image('bag', '../../assets/bag.png');
-    this.load.image('dynamit', 'assets/dynamite.jpg'); // Preload dynamite
+    this.load.image('dynamite', '../../assets/dynamite.jpg'); // Preload dynamite
     this.load.image('background', '../../assets/background.png');
     this.load.image('ropeTexture', '../../assets/rope.avif');
     this.load.image('hookImage', '../../assets/hook.jpg');
@@ -71,7 +71,7 @@ export default class GameScene extends Phaser.Scene {
     // Create items in random grid
     const randomRows = Phaser.Math.Between(5, 10);
     const randomCols = Phaser.Math.Between(5, 10);
-    this.items = createItems(this, randomRows, randomCols);
+    this.items = createItems(this,  'hard');
 
     // Create rope
     this.rope = new Rope(this, this.upgrades);
